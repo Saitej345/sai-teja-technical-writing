@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Sai Teja K — Technical Writer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          mono: ["IBM Plex Mono", "monospace"],
+          sans: ["IBM Plex Sans", "sans-serif"]
+        }
+      }
+    }
+  };
+</script>
+<style>
+  :root {
+    --bg: #0F1419;
+    --surface: #161B22;
+    --surface-2: #1C232C;
+    --text: #E6EDF3;
+    --text-dim: #92A0AC;
+    --brass: #D4A657;
+    --teal: #5B8C9E;
+    --border: rgba(230,237,243,0.10);
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: calc(72px + env(safe-area-inset-top, 0px)); }
+  html, body { background: var(--bg); margin: 0; }
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    color: var(--text);
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--brass); color: #0F1419; }
+
+  .font-mono-heading { font-family: 'IBM Plex Mono', monospace; }
+
+  a { color: inherit; }
+
+  /* --- reveal-on-scroll (subtle 3D flip-up) --- */
+  .reveal {
+    opacity: 0;
+    transform: perspective(900px) rotateX(8deg) translateY(24px);
+    transform-origin: top center;
+    transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+    transition-delay: var(--rdelay, 0s);
+  }
+  .reveal.visible { opacity: 1; transform: perspective(900px) rotateX(0deg) translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { transition: none !important; opacity: 1 !important; transform: none !important; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* --- nav --- */
+  .nav-link { position: relative; padding-bottom: 2px; }
+  .nav-link::after {
+    content: '';
+    position: absolute; left: 0; bottom: 0;
+    width: 0%; height: 1px;
+    background: var(--brass);
+    transition: width 0.25s ease;
+  }
+  .nav-link:hover::after { width: 100%; }
+
+  /* --- frontmatter block --- */
+  .frontmatter {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .fm-row { display: flex; gap: 0.75rem; padding: 0.55rem 0; border-bottom: 1px solid var(--border); }
+  .fm-row:last-child { border-bottom: none; }
+  .fm-key { color: var(--teal); flex: 0 0 auto; min-width: 88px; }
+  .fm-val { color: var(--text); }
+
+  /* --- tag chips --- */
+  .tag-chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--brass);
+    border: 1px solid rgba(212,166,87,0.35);
+    background: rgba(212,166,87,0.06);
+    border-radius: 6px;
+    padding: 0.3rem 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  .tag-chip .br { opacity: 0.55; }
+
+  /* --- timeline --- */
+  .timeline-item { position: relative; padding-left: 2.25rem; }
+  .timeline-item::before {
+    content: '';
+    position: absolute; left: 0.30rem; top: 0.35rem;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--brass);
+  }
+  .timeline-item::after {
+    content: '';
+    position: absolute; left: 0.62rem; top: 1rem; bottom: -2.25rem;
+    width: 1px;
+    background: var(--border);
+  }
+  .timeline-item:last-child::after { display: none; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: border-color 0.3s ease;
+  }
+  .card:hover { border-color: rgba(212,166,87,0.35); }
+
+  .btn-primary {
+    background: var(--brass);
+    color: #0F1419;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .btn-primary:hover { background: #e2b568; }
+  .btn-ghost {
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
+
+  #hero-canvas-wrap { position: relative; }
+  #hero-canvas { width: 100%; height: 100%; display: block; }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--teal);
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="fixed top-0 left-0 right-0 z-50" style="background: rgba(15,20,25,0.85); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border);">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8 h-[64px] flex items-center justify-between">
+    <a href="#top" class="font-mono-heading text-sm sm:text-base" style="color: var(--text);">Sai Teja K</a>
+    <nav class="hidden sm:flex items-center gap-8 text-sm">
+      <a href="#about" class="nav-link">About</a>
+      <a href="#experience" class="nav-link">Experience</a>
+      <a href="#skills" class="nav-link">Skills</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </nav>
+    <a href="mailto:saitejatw@gmail.com" class="btn-primary text-xs sm:text-sm px-4 py-2 rounded-md">Email me</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="top" class="relative pt-[64px] min-h-screen flex items-center" style="background: var(--bg);">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8 py-16 sm:py-20 grid md:grid-cols-2 gap-12 md:gap-8 items-center w-full">
+    <div class="reveal order-2 md:order-1">
+      <p class="section-label mb-4">technical-writer / api &amp; software documentation</p>
+      <h1 class="font-mono-heading font-semibold leading-[1.05] mb-6" style="font-size: clamp(2.2rem, 5.5vw, 3.6rem); color: var(--text);">
+        I make complex<br />systems <span style="color: var(--brass);">readable</span>.
+      </h1>
+      <p class="text-base sm:text-lg leading-relaxed max-w-md mb-8" style="color: var(--text-dim);">
+        Technical Writer with 3+ years documenting software, APIs, and laboratory instruments — turning engineering detail into documentation people actually use, structured in DITA/XML and built to last through every product change.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <a href="mailto:saitejatw@gmail.com" class="btn-primary rounded-md px-6 py-3 text-sm">Email me</a>
+        <a href="https://www.linkedin.com/in/sai-teja-k22" target="_blank" rel="noopener" class="btn-ghost rounded-md px-6 py-3 text-sm">View LinkedIn</a>
+      </div>
+    </div>
+    <div class="order-1 md:order-2 reveal" style="--rdelay: 0.1s;">
+      <div id="hero-canvas-wrap" class="w-full h-[280px] sm:h-[380px] md:h-[440px]">
+        <canvas id="hero-canvas"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="relative px-5 sm:px-8 py-20 sm:py-28" style="background: var(--bg);">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 md:gap-16 items-start">
+    <div class="reveal">
+      <p class="section-label mb-3">about</p>
+      <h2 class="font-mono-heading font-semibold mb-6" style="font-size: clamp(1.6rem, 3.5vw, 2.4rem);">Documentation that survives the next release</h2>
+      <p class="leading-relaxed mb-4" style="color: var(--text-dim);">
+        I currently write and maintain software and technical documentation at iLenSys Technologies, covering analytical and laboratory instruments — instruction manuals, user guides, and API references built in Adobe FrameMaker and structured DITA/XML.
+      </p>
+      <p class="leading-relaxed" style="color: var(--text-dim);">
+        Before that, I spent nearly three years at YDI Solutions carrying documentation through its full lifecycle — drafting, structured authoring, peer review, and revision — while working closely with engineers and SMEs to keep content accurate as products changed under it.
+      </p>
+    </div>
+    <div class="reveal frontmatter p-5 sm:p-6" style="--rdelay: 0.1s;">
+      <div class="fm-row"><span class="fm-key">role</span><span class="fm-val">Technical Writer - I</span></div>
+      <div class="fm-row"><span class="fm-key">focus</span><span class="fm-val">API &amp; software documentation, DITA/XML</span></div>
+      <div class="fm-row"><span class="fm-key">tools</span><span class="fm-val">FrameMaker, Oxygen XML Author, Snagit</span></div>
+      <div class="fm-row"><span class="fm-key">process</span><span class="fm-val">Agile documentation, Jira, Confluence</span></div>
+      <div class="fm-row"><span class="fm-key">based</span><span class="fm-val">Andhra Pradesh, India</span></div>
+      <div class="fm-row"><span class="fm-key">contact</span><span class="fm-val">saitejatw@gmail.com</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" class="relative px-5 sm:px-8 py-20 sm:py-28" style="background: var(--surface-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="max-w-4xl mx-auto">
+    <p class="reveal section-label mb-3">experience</p>
+    <h2 class="reveal font-mono-heading font-semibold mb-14" style="font-size: clamp(1.6rem, 3.5vw, 2.4rem); --rdelay:0.05s;">Career timeline</h2>
+
+    <div class="space-y-10">
+      <div class="reveal timeline-item" style="--rdelay:0s;">
+        <p class="font-mono-heading text-sm mb-1" style="color: var(--brass);">Nov 2025 — Present</p>
+        <h3 class="text-lg font-medium mb-1">Technical Writer - I, iLenSys Technologies Pvt Ltd</h3>
+        <p class="text-sm mb-3" style="color: var(--text-dim);">Hyderabad</p>
+        <p class="leading-relaxed" style="color: var(--text-dim);">Create and maintain software, technical, and user documentation for analytical and laboratory instruments — instruction manuals, API references, and structured DITA/XML content, developed alongside SMEs, engineers, and scientists and carried through peer review.</p>
+      </div>
+      <div class="reveal timeline-item" style="--rdelay:0.05s;">
+        <p class="font-mono-heading text-sm mb-1" style="color: var(--brass);">Dec 2024 — Oct 2025</p>
+        <h3 class="text-lg font-medium mb-1">Technical Writer, YDI Solutions Pvt Ltd</h3>
+        <p class="text-sm mb-3" style="color: var(--text-dim);">Bangalore Urban</p>
+        <p class="leading-relaxed" style="color: var(--text-dim);">Independently owned technical and user documentation across its full lifecycle, authoring in Oxygen XML, building screenshots and visual procedures in Snagit, and maintaining consistency with established style guidelines.</p>
+      </div>
+      <div class="reveal timeline-item" style="--rdelay:0.1s;">
+        <p class="font-mono-heading text-sm mb-1" style="color: var(--brass);">Dec 2022 — Nov 2024</p>
+        <h3 class="text-lg font-medium mb-1">Junior Technical Writer, YDI Solutions Pvt Ltd</h3>
+        <p class="text-sm mb-3" style="color: var(--text-dim);">Bangalore Urban</p>
+        <p class="leading-relaxed" style="color: var(--text-dim);">Supported user manuals and procedural documentation across the Document Development Life Cycle, maintaining XML/DITA content and incorporating SME and stakeholder feedback into every revision.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" class="relative px-5 sm:px-8 py-20 sm:py-28" style="background: var(--bg);">
+  <div class="max-w-5xl mx-auto">
+    <p class="reveal section-label mb-3">skills</p>
+    <h2 class="reveal font-mono-heading font-semibold mb-14" style="font-size: clamp(1.6rem, 3.5vw, 2.4rem); --rdelay:0.05s;">Toolkit</h2>
+
+    <div class="grid sm:grid-cols-2 gap-10">
+      <div class="reveal" style="--rdelay:0s;">
+        <h3 class="text-sm mb-3" style="color: var(--text-dim);">Documentation</h3>
+        <div class="flex flex-wrap gap-2">
+          <span class="tag-chip"><span class="br">&lt;</span>technical-docs<span class="br">/&gt;</span></span>
+          <span class="tag-chip"><span class="br">&lt;</span>user-manuals<span class="br">/&gt;</span></span>
+          <span class="tag-chip"><span class="br">&lt;</span>instruction-guides<span class="br">/&gt;</span></span>
+          <span class="tag-chip"><span class="br">&lt;</span>release-notes<span class="br">/&gt;</span></span>
+        </div>
+      </div>
+      <div class="reveal" style="--rdelay:0.05s;">
+        <h3 class="text-sm mb-3" style="color: var(--text-dim);">API &amp; developer docs</h3>
+        <div class="flex flex-wrap gap-2">
+          <span class="tag-chip"><span class="br">&lt;</span>api-docs<span class="br">/&gt;</span></span>
+          <span class="tag-chip"><span class="br">&lt;</span>json<span class="br">/&gt;</span></span>
+          <span class="tag-chip"><span class="br">&lt;</span>xml<span class="br">/&gt;</span></span>
+          <span class="tag-chip"><span class="br">&lt;</span>markdown<span class="br">/&gt;</span></span>
+        </div>
+      </div>
+      <div class="reveal" style="--rdelay:0.1s;">
+        <h3 class="text-sm mb-3" style="color: var(--text-dim);">Structured authoring</h3>
+        <div class="flex flex-wrap gap-2">
+          <span class="tag-chip"><span class="br">&lt;</span>dita<span class="br">/&gt;</span></span>
+          <span class="tag-chip"><span class="br">&lt;</span>oxygen-xml<span class="br">/&gt;</span></span>
+          <span class="tag-chip"><span class="br">&lt;</span>framemaker<span class="br">/&gt;</span></span>
+        </div>
+      </div>
+      <div class="reveal" style="--rdelay:0.15s;">
+        <h3 class="text-sm mb-3" style="color: var(--text-dim);">Process &amp; tools</h3>
+        <div class="flex flex-wrap gap-2">
+          <span class="tag-chip"><span class="br">&lt;</span>ddlc<span class="br">/&gt;</span></span>
+          <span class="tag-chip"><span class="br">&lt;</span>agile<span class="br">/&gt;</span></span>
+          <span class="tag-chip"><span class="br">&lt;</span>jira<span class="br">/&gt;</span></span>
+          <span class="tag-chip"><span class="br">&lt;</span>confluence<span class="br">/&gt;</span></span>
+          <span class="tag-chip"><span class="br">&lt;</span>git<span class="br">/&gt;</span></span>
+          <span class="tag-chip"><span class="br">&lt;</span>snagit<span class="br">/&gt;</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS + EDUCATION -->
+<section class="relative px-5 sm:px-8 py-20 sm:py-28" style="background: var(--surface-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-14">
+    <div>
+      <p class="reveal section-label mb-3">certifications</p>
+      <h2 class="reveal font-mono-heading font-semibold mb-8" style="font-size: clamp(1.4rem, 3vw, 1.9rem); --rdelay:0.05s;">Certifications</h2>
+      <ul class="space-y-4">
+        <li class="reveal card p-4 rounded-lg text-sm leading-relaxed" style="--rdelay:0s;">Learning Markdown: Formatting Text without the Complexity</li>
+        <li class="reveal card p-4 rounded-lg text-sm leading-relaxed" style="--rdelay:0.05s;">Creating Technical Documentation with GitHub</li>
+        <li class="reveal card p-4 rounded-lg text-sm leading-relaxed" style="--rdelay:0.1s;">Learn API Documentation with JSON and XML</li>
+        <li class="reveal card p-4 rounded-lg text-sm leading-relaxed" style="--rdelay:0.15s;">API Documentation — TWT</li>
+        <li class="reveal card p-4 rounded-lg text-sm leading-relaxed" style="--rdelay:0.2s;">Creating API Documentation</li>
+      </ul>
+    </div>
+    <div>
+      <p class="reveal section-label mb-3">education</p>
+      <h2 class="reveal font-mono-heading font-semibold mb-8" style="font-size: clamp(1.4rem, 3vw, 1.9rem); --rdelay:0.05s;">Education</h2>
+      <div class="reveal card p-5 rounded-lg">
+        <p class="font-mono-heading text-sm mb-1" style="color: var(--brass);">2017 — 2022</p>
+        <h3 class="text-lg font-medium mb-1">Sri Vasavi Engineering College</h3>
+        <p class="leading-relaxed text-sm" style="color: var(--text-dim);">Bachelor of Technology (B.Tech.), Electrical and Electronics Engineering</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<footer id="contact" class="relative px-5 sm:px-8 py-20 sm:py-28" style="background: var(--bg);">
+  <div class="max-w-3xl mx-auto text-center reveal">
+    <p class="section-label mb-3">contact</p>
+    <h2 class="font-mono-heading font-semibold mb-6" style="font-size: clamp(1.8rem, 4.5vw, 2.8rem);">Let&rsquo;s document something well.</h2>
+    <p class="mb-10 leading-relaxed" style="color: var(--text-dim);">Open to technical writing roles in software, API, and structured documentation.</p>
+    <div class="flex flex-wrap justify-center gap-3 mb-12">
+      <a href="mailto:saitejatw@gmail.com" class="btn-primary rounded-md px-6 py-3 text-sm">saitejatw@gmail.com</a>
+      <a href="tel:+917569034512" class="btn-ghost rounded-md px-6 py-3 text-sm">+91 75690 34512</a>
+      <a href="https://www.linkedin.com/in/sai-teja-k22" target="_blank" rel="noopener" class="btn-ghost rounded-md px-6 py-3 text-sm">LinkedIn</a>
+    </div>
+    <p class="text-xs" style="color: var(--text-dim);">&copy; 2026 Sai Teja K. Andhra Pradesh, India.</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/128/three.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- reveal-on-scroll ---------- */
+  var revealEls = document.querySelectorAll('.reveal');
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { root: null, rootMargin: '0px 0px -60px 0px', threshold: 0 });
+  revealEls.forEach(function (el) { io.observe(el); });
+
+  /* ---------- Three.js hero: rotating stack of "pages" ---------- */
+  var wrap = document.getElementById('hero-canvas-wrap');
+  var canvas = document.getElementById('hero-canvas');
+  if (!wrap || !canvas || typeof THREE === 'undefined') return;
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(40, wrap.clientWidth / wrap.clientHeight, 0.1, 100);
+  camera.position.set(0, 0, 7);
+
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+
+  var ambient = new THREE.AmbientLight(0xffffff, 0.55);
+  scene.add(ambient);
+  var dir1 = new THREE.DirectionalLight(0xD4A657, 1.1);
+  dir1.position.set(3, 4, 5);
+  scene.add(dir1);
+  var dir2 = new THREE.DirectionalLight(0x5B8C9E, 0.7);
+  dir2.position.set(-4, -2, 3);
+  scene.add(dir2);
+
+  var group = new THREE.Group();
+  scene.add(group);
+
+  var pageCount = 9;
+  var brass = new THREE.Color(0xD4A657);
+  var teal = new THREE.Color(0x5B8C9E);
+  var pale = new THREE.Color(0xE6EDF3);
+
+  for (var i = 0; i < pageCount; i++) {
+    var w = 2.6 - Math.random() * 0.15;
+    var h = 3.4 - Math.random() * 0.2;
+    var geo = new THREE.BoxGeometry(w, h, 0.035);
+    var t = i / (pageCount - 1);
+    var col = pale.clone().lerp(t < 0.5 ? teal : brass, Math.abs(t - 0.15) * 1.1);
+    var mat = new THREE.MeshStandardMaterial({
+      color: col,
+      roughness: 0.55,
+      metalness: 0.15,
+      transparent: true,
+      opacity: 0.92
+    });
+    var mesh = new THREE.Mesh(geo, mat);
+    var spread = 0.09;
+    mesh.position.set(
+      (Math.random() - 0.5) * spread,
+      (Math.random() - 0.5) * spread,
+      (i - pageCount / 2) * 0.11
+    );
+    mesh.rotation.z = (Math.random() - 0.5) * 0.05;
+    group.add(mesh);
+
+    var edges = new THREE.EdgesGeometry(geo);
+    var lineMat = new THREE.LineBasicMaterial({ color: 0x0F1419, transparent: true, opacity: 0.35 });
+    var lines = new THREE.LineSegments(edges, lineMat);
+    mesh.add(lines);
+  }
+
+  group.rotation.x = 0.18;
+  group.rotation.y = -0.35;
+
+  var targetRotX = group.rotation.x;
+  var targetRotY = group.rotation.y;
+  var baseRotY = group.rotation.y;
+
+  function onPointerMove(clientX, clientY) {
+    var rect = wrap.getBoundingClientRect();
+    var nx = ((clientX - rect.left) / rect.width) * 2 - 1;
+    var ny = ((clientY - rect.top) / rect.height) * 2 - 1;
+    targetRotY = baseRotY + nx * 0.35;
+    targetRotX = 0.18 + ny * 0.18;
+  }
+  window.addEventListener('mousemove', function (e) { onPointerMove(e.clientX, e.clientY); }, { passive: true });
+
+  var clock = new THREE.Clock();
+  function animate() {
+    requestAnimationFrame(animate);
+    var t = clock.getElapsedTime();
+    baseRotY += 0.0022;
+    group.rotation.x += (targetRotX - group.rotation.x) * 0.04;
+    group.rotation.y += ((baseRotY + (targetRotY - (targetRotY === group.rotation.y ? targetRotY : 0))) - group.rotation.y) * 0.04 + 0.0022 * 0;
+    group.rotation.y += 0.0; // keep simple accumulation below
+    group.position.y = Math.sin(t * 0.6) * 0.12;
+    renderer.render(scene, camera);
+  }
+
+  /* simplified, stable rotation driver (overrides above no-op lines) */
+  var autoY = group.rotation.y;
+  var mouseOffsetX = 0, mouseOffsetY = 0;
+  window.addEventListener('mousemove', function (e) {
+    var rect = wrap.getBoundingClientRect();
+    var nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    var ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+    mouseOffsetX = Math.max(-1, Math.min(1, nx)) * 0.35;
+    mouseOffsetY = Math.max(-1, Math.min(1, ny)) * 0.15;
+  }, { passive: true });
+
+  function loop() {
+    requestAnimationFrame(loop);
+    var t = clock.getElapsedTime();
+    autoY += 0.0022;
+    group.rotation.y += ((autoY + mouseOffsetX) - group.rotation.y) * 0.05;
+    group.rotation.x += ((0.18 + mouseOffsetY) - group.rotation.x) * 0.05;
+    group.position.y = Math.sin(t * 0.6) * 0.12;
+    renderer.render(scene, camera);
+  }
+  loop();
+
+  function onResize() {
+    var w = wrap.clientWidth, h = wrap.clientHeight;
+    if (!w || !h) return;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  }
+  window.addEventListener('resize', onResize);
+  setTimeout(onResize, 200);
+})();
+</script>
+</body>
+</html>
